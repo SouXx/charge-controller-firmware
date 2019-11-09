@@ -261,11 +261,9 @@ void high_voltage_alert()
 
 void low_voltage_alert()
 {
-    // disable load output
-    load.emergency_stop(LOAD_STATE_OFF_OVERCURRENT);
-    charger.port->neg_current_limit = 0;
-
-    dev_stat.set_error(ERR_BAT_UNDERVOLTAGE);
+    // the battery undervoltage was most probably caused by a load current peak
+    load.stop(ERR_LOAD_VOLTAGE_DIP);
+    //charger.port->neg_current_limit = 0;
 
     print_error("Low voltage alert, ADC reading: %d limit: %d\n",
         adc_readings[ADC_POS_V_BAT], adc_alerts_lower[ADC_POS_V_BAT].limit);

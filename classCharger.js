@@ -1,0 +1,25 @@
+var classCharger =
+[
+    [ "Charger", "classCharger.html#af5a44affdea04f99a189d8aaf22d4da3", null ],
+    [ "charge_control", "classCharger.html#a65639d90dd653dae408d8f068295c93d", null ],
+    [ "detect_num_batteries", "classCharger.html#a30262d816963dc837d93da26cdf35d1f", null ],
+    [ "discharge_control", "classCharger.html#a21cfa6bd056875b84c7ef245fdb6e167", null ],
+    [ "update_soc", "classCharger.html#a0ea0728511468c6060f1480a7d2ed7ae", null ],
+    [ "bat_temperature", "classCharger.html#ad2cdd72f8c6d2b0088f44122926827b1", null ],
+    [ "deep_dis_last_equalization", "classCharger.html#aa854e2bb2e4a11f08d532abb5523fcb5", null ],
+    [ "discharged_Ah", "classCharger.html#ab1f40ebd0bd54edb3076aac2855be9ea", null ],
+    [ "ext_temp_sensor", "classCharger.html#a9cf2c6f365e8915a49bbf010c265fc61", null ],
+    [ "first_full_charge_reached", "classCharger.html#ad5d048941ba998dfaf20bb292aba5d39", null ],
+    [ "full", "classCharger.html#a54035c0e5f69566290084795b4c21eb9", null ],
+    [ "num_batteries", "classCharger.html#a7794af83c7d60f7f8f945bcf1ab65e7a", null ],
+    [ "num_deep_discharges", "classCharger.html#af79f5624d3098f1ca8537a226f2988f5", null ],
+    [ "num_full_charges", "classCharger.html#ae8463f780ed4e2df6c2c62a506bb06eb", null ],
+    [ "port", "classCharger.html#aebe1440a423d98a905e68d4420d75a28", null ],
+    [ "soc", "classCharger.html#aeb3b41c1c91de5b3951aa326251949c5", null ],
+    [ "soh", "classCharger.html#a742db8e04d56770eff4a2f953f360332", null ],
+    [ "state", "classCharger.html#a8bdf153f84815bfec44343b478b0da34", null ],
+    [ "time_last_equalization", "classCharger.html#a0def65c13ef3b7d56c497fbee09e9289", null ],
+    [ "time_state_changed", "classCharger.html#aeb9ac81889c7b040cacde0cdc975c332", null ],
+    [ "time_voltage_limit_reached", "classCharger.html#aaa29b84f11b5c06ebf3e5f19a2f3ffd6", null ],
+    [ "usable_capacity", "classCharger.html#aaafddd76a5333552add646c9913f8ceb", null ]
+];

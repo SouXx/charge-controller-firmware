@@ -1,0 +1,24 @@
+var searchData=
+[
+  ['data_5fobjects_2eh',['data_objects.h',['../data__objects_8h.html',1,'']]],
+  ['dcdc',['Dcdc',['../classDcdc.html',1,'Dcdc'],['../classDcdc.html#a7d170b44dfcfacf520f1526e4886a7e8',1,'Dcdc::Dcdc()']]],
+  ['dcdc_2eh',['dcdc.h',['../dcdc_8h.html',1,'']]],
+  ['dcdc_5fstate_5fcc',['DCDC_STATE_CC',['../dcdc_8h.html#a3ef53a86bc923a83b6ad8758daf43be8a85a8dcac73505dc1455bfc9139af37d1',1,'dcdc.h']]],
+  ['dcdc_5fstate_5fcv',['DCDC_STATE_CV',['../dcdc_8h.html#a3ef53a86bc923a83b6ad8758daf43be8a8bcc938becb8582aff7ed73cc367b70f',1,'dcdc.h']]],
+  ['dcdc_5fstate_5fderating',['DCDC_STATE_DERATING',['../dcdc_8h.html#a3ef53a86bc923a83b6ad8758daf43be8a81db2b401ecc668aef5b0edcfb096101',1,'dcdc.h']]],
+  ['dcdc_5fstate_5fmppt',['DCDC_STATE_MPPT',['../dcdc_8h.html#a3ef53a86bc923a83b6ad8758daf43be8a64bcf38bb12e53f3370312a1f9e14c07',1,'dcdc.h']]],
+  ['dcdc_5fstate_5foff',['DCDC_STATE_OFF',['../dcdc_8h.html#a3ef53a86bc923a83b6ad8758daf43be8aef968d4f2c1256a79815103de1b96499',1,'dcdc.h']]],
+  ['dcdccontrolstate',['DcdcControlState',['../dcdc_8h.html#a3ef53a86bc923a83b6ad8758daf43be8',1,'dcdc.h']]],
+  ['dcdcoperationmode',['DcdcOperationMode',['../dcdc_8h.html#a3e5b2912733f0851a6e26bb61b3db32d',1,'dcdc.h']]],
+  ['debounce_5fms',['debounce_ms',['../structAdcAlert.html#ae5e30838002c01faddcd357c1e6912ce',1,'AdcAlert']]],
+  ['deep_5fdis_5flast_5fequalization',['deep_dis_last_equalization',['../classCharger.html#aa854e2bb2e4a11f08d532abb5523fcb5',1,'Charger']]],
+  ['detect_5fnum_5fbatteries',['detect_num_batteries',['../classCharger.html#a30262d816963dc837d93da26cdf35d1f',1,'Charger']]],
+  ['device_5fstatus_2eh',['device_status.h',['../device__status_8h.html',1,'']]],
+  ['devicestatus',['DeviceStatus',['../classDeviceStatus.html',1,'']]],
+  ['discharge_5fcontrol',['discharge_control',['../classCharger.html#a21cfa6bd056875b84c7ef245fdb6e167',1,'Charger']]],
+  ['discharge_5fcurrent_5fmax',['discharge_current_max',['../structBatConf.html#a2bfe02866a53fea5cd1f84ffd43fb192',1,'BatConf']]],
+  ['discharge_5ftemp_5fmax',['discharge_temp_max',['../structBatConf.html#a58c89d2c8c28c67e5afeba7885e9a689',1,'BatConf']]],
+  ['discharge_5ftemp_5fmin',['discharge_temp_min',['../structBatConf.html#acb86a7437628d663b6e4924e2c692ecc',1,'BatConf']]],
+  ['discharged_5fah',['discharged_Ah',['../classCharger.html#ab1f40ebd0bd54edb3076aac2855be9ea',1,'Charger']]],
+  ['dma_5fsetup',['dma_setup',['../adc__dma_8h.html#ae10c7eef91205f9e3b7e4ffe6eeaffb4',1,'adc_dma.h']]]
+];

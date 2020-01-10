@@ -4,12 +4,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#ifdef __MBED__
-
-#include "mbed.h"
 #include "config.h"
 #include "thingset.h"
 #include "ext.h"
+
+#ifdef __MBED__
+
+#include "mbed.h"
 
 class ThingSetStream: public ExtInterface
 {
@@ -142,4 +143,65 @@ void ThingSetStream::process_input()
         }
     }
 }
-#endif /* __MBED__ */
+//#endif /* __MBED__ */
+
+#elif defined(__ZEPHYR__)
+
+#include <zephyr.h>
+#include <sys/printk.h>
+#include <console/console.h>
+#include <string.h>
+#include <stdio.h>
+
+extern ThingSet ts;
+
+void thingset_serial_thread()
+{
+    uint8_t buf_req[500];
+    uint8_t buf_resp[1000];
+    unsigned int req_pos = 0;
+
+    console_init();
+
+	while (1) {
+
+        uint8_t c = console_getchar();
+
+        if (req_pos < sizeof(buf_req)) {
+            buf_req[req_pos] = c;
+
+            if (buf_req[req_pos] == '\n') {
+                if (req_pos > 0 && buf_req[req_pos-1] == '\r')
+                    buf_req[req_pos-1] = '\0';
+                else
+                    buf_req[req_pos] = '\0';
+
+                // start processing
+                if (req_pos > 1) {
+                    printf("Received Request (%d bytes): %s\n", strlen((char *)buf_req), buf_req);
+                    int len = ts.process(buf_req, strlen((char *)buf_req), buf_resp, sizeof(buf_resp));
+                    for (int i = 0; i < len; i++) {
+                        console_putchar(buf_resp[i]);
+                    }
+                    console_putchar('\n');
+                }
+
+                req_pos = 0;
+            }
+            else if (req_pos > 0 && buf_req[req_pos] == '\b') { // backspace
+                req_pos--;
+            }
+            else {
+                req_pos++;
+            }
+        }
+        else {
+            // buffer to small: discard data and wait for end of line
+            if (c == '\n' || c == '\r') {
+                req_pos = 0;
+            }
+        }
+	}
+}
+
+#endif /* ZEPHYR */

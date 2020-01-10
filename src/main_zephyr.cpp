@@ -5,7 +5,6 @@
  */
 
 #ifdef __ZEPHYR__
-
 #include <zephyr.h>
 #include <stdio.h>
 #include <device.h>
@@ -27,6 +26,7 @@
 #include "leds.h"               // LED switching using charlieplexing
 #include "device_status.h"                // log data (error memory, min/max measurements, etc.)
 #include "data_objects.h"       // for access to internal data via ThingSet
+#include "ext/serial.h"
 
 PowerPort lv_terminal;          // low voltage terminal (battery for typical MPPT)
 
@@ -122,7 +122,7 @@ void ext_mgr_thread()
         if (now >= last_call + 1) {
             last_call = now;
             ext_mgr.process_1s();
-            printf("%d\n", now);
+            //printf("%d\n", now);
         }
         cnt++;
         k_sleep(1);
@@ -132,5 +132,8 @@ void ext_mgr_thread()
 K_THREAD_DEFINE(leds_id, 256, leds_update_thread, NULL, NULL, NULL,	4, 0, K_NO_WAIT);
 
 K_THREAD_DEFINE(ext_thread, 1024, ext_mgr_thread, NULL, NULL, NULL, 6, 0, 1000);
+
+K_THREAD_DEFINE(ts_serial_id, 4096, thingset_serial_thread, NULL, NULL, NULL, 5, 0, K_NO_WAIT);
+
 
 #endif // __ZEPHYR__

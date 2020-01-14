@@ -12,10 +12,24 @@
 
 #include "mbed.h"
 
+#elif defined(__ZEPHYR__)
+
+#include <zephyr.h>
+#include <sys/printk.h>
+#include <console/console.h>
+#include <string.h>
+#include <stdio.h>
+
+#endif /* MBED or ZEPHYR */
+
 class ThingSetStream: public ExtInterface
 {
     public:
+        #ifdef __MBED__
         ThingSetStream(Stream& s, const unsigned int c): channel(c), stream(&s) {};
+        #elif defined(__ZEPHYR__)
+        ThingSetStream(const unsigned int c): channel(c){};
+        #endif
 
         virtual void process_asap();
         virtual void process_1s();
@@ -26,11 +40,17 @@ class ThingSetStream: public ExtInterface
 
         virtual bool readable()
         {
+            #ifdef __MBED__
             return stream->readable();
+            #elif defined(__ZEPHYR__)
+            return true;
+            #endif
         }
 
     private:
+        #ifdef __MBED__
         Stream* stream;
+        #endif
 
         static char buf_resp[1000];           // only one response buffer needed for all objects
         char buf_req[500];
@@ -38,6 +58,7 @@ class ThingSetStream: public ExtInterface
         bool command_flag = false;
 };
 
+#ifdef __MBED__
 template<typename T> class ThingSetSerial: public ThingSetStream
 {
     public:
@@ -58,6 +79,23 @@ template<typename T> class ThingSetSerial: public ThingSetStream
         T& ser;
 };
 
+#elif defined(__ZEPHYR__)
+class ThingSetSerial: public ThingSetStream
+{
+    public:
+        ThingSetSerial(const int c): ThingSetStream(c){}
+
+        void enable() {
+            console_init(); 
+        }
+
+    private:
+        bool readable()
+        {
+            return true;
+        }
+};
+#endif /* MBED or ZEPHYR*/
 
 /*
  * Construct all global ExtInterfaces here.
@@ -66,10 +104,17 @@ template<typename T> class ThingSetSerial: public ThingSetStream
  */
 
 #ifdef UART_SERIAL_ENABLED
-    extern const int pub_channel_serial;
-    extern Serial serial;
 
-    ThingSetSerial ts_uart(serial, pub_channel_serial);
+    #ifdef __MBED__
+        extern const int pub_channel_serial;
+        extern Serial serial;
+        ThingSetSerial ts_uart(serial, pub_channel_serial);
+
+    #elif defined(__ZEPHYR__)
+        extern const int pub_channel_serial;
+        ThingSetSerial ts_uart(pub_channel_serial);
+    #endif /* MBED or ZEPHYR */
+
 #endif /* UART_SERIAL_ENABLED */
 
 // ToDo: Add USB serial again (previous library was broken with recent mbed releases)
@@ -81,22 +126,44 @@ extern ThingSet ts;
 void ThingSetStream::process_1s()
 {
     if (ts.get_pub_channel(channel)->enabled) {
+        #ifdef __MBED__
         ts.pub_msg_json(buf_resp, sizeof(buf_resp), channel);
         stream->puts(buf_resp);
         stream->putc('\n');
+
+        #elif defined(__ZEPHYR__)
+        int len = ts.pub_msg_json(buf_resp, sizeof(buf_resp), channel);
+        for (int i = 0; i < len; i++) {
+            console_putchar(buf_resp[i]);
+        }
+        console_putchar('\n');
+        #endif
+
     }
 }
 
 void ThingSetStream::process_asap()
 {
+    process_input();
+
     if (command_flag) {
         // commands must have 2 or more characters
         if (req_pos > 1) {
+            #ifdef __MBED__
             stream->printf("Received Request (%d bytes): %s\n", strlen(buf_req), buf_req);
             ts.process((uint8_t *)buf_req, strlen(buf_req), (uint8_t *)buf_resp, sizeof(buf_resp));
             stream->puts(buf_resp);
             stream->putc('\n');
             fflush(*stream);
+
+            #elif defined(__ZEPHYR__)
+            printf("Received Request (%d bytes): %s\n", strlen(buf_req), buf_req);
+            int len = ts.process((uint8_t *)buf_req, strlen(buf_req), (uint8_t *)buf_resp, sizeof(buf_resp));
+            for (int i = 0; i < len; i++) {
+                console_putchar(buf_resp[i]);
+            }
+            console_putchar('\n');
+            #endif /* MBED or ZEPHYR */
         }
 
         // start listening for new commands
@@ -113,7 +180,11 @@ void ThingSetStream::process_input()
 {
     while (readable() && command_flag == false) {
 
+        #ifdef __MBED__
         int c = stream->getc();
+        #elif defined(__ZEPHYR__)
+        int c = console_getchar();
+        #endif /* MBED or ZEPHYR */
 
         // \r\n and \n are markers for line end, i.e. command end
         // we accept this at any time, even if the buffer is 'full', since
@@ -143,65 +214,3 @@ void ThingSetStream::process_input()
         }
     }
 }
-//#endif /* __MBED__ */
-
-#elif defined(__ZEPHYR__)
-
-#include <zephyr.h>
-#include <sys/printk.h>
-#include <console/console.h>
-#include <string.h>
-#include <stdio.h>
-
-extern ThingSet ts;
-
-void thingset_serial_thread()
-{
-    uint8_t buf_req[500];
-    uint8_t buf_resp[1000];
-    unsigned int req_pos = 0;
-
-    console_init();
-
-	while (1) {
-
-        uint8_t c = console_getchar();
-
-        if (req_pos < sizeof(buf_req)) {
-            buf_req[req_pos] = c;
-
-            if (buf_req[req_pos] == '\n') {
-                if (req_pos > 0 && buf_req[req_pos-1] == '\r')
-                    buf_req[req_pos-1] = '\0';
-                else
-                    buf_req[req_pos] = '\0';
-
-                // start processing
-                if (req_pos > 1) {
-                    printf("Received Request (%d bytes): %s\n", strlen((char *)buf_req), buf_req);
-                    int len = ts.process(buf_req, strlen((char *)buf_req), buf_resp, sizeof(buf_resp));
-                    for (int i = 0; i < len; i++) {
-                        console_putchar(buf_resp[i]);
-                    }
-                    console_putchar('\n');
-                }
-
-                req_pos = 0;
-            }
-            else if (req_pos > 0 && buf_req[req_pos] == '\b') { // backspace
-                req_pos--;
-            }
-            else {
-                req_pos++;
-            }
-        }
-        else {
-            // buffer to small: discard data and wait for end of line
-            if (c == '\n' || c == '\r') {
-                req_pos = 0;
-            }
-        }
-	}
-}
-
-#endif /* ZEPHYR */
